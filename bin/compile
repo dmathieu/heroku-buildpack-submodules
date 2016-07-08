@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export BUILD_DIR=$1
+bp_dir=$(cd $(dirname $0); cd ..; pwd)
+
+echo "---> Installing parseconfig gem"
+gem install 'parseconfig'
+
+ruby $bp_dir/bin/install_git_submodules.rb
