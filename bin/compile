@@ -3,6 +3,11 @@
 export BUILD_DIR=$1
 bp_dir=$(cd $(dirname $0); cd ..; pwd)
 
+if [ ! -f "$BUILD_DIR/.gitmodules" ]; then
+  echo "---> No .gitmodules file found. Skipping."
+  exit 0
+fi
+
 echo "---> Installing parseconfig gem"
 gem install 'parseconfig'
 
