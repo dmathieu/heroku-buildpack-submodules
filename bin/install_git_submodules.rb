@@ -7,14 +7,14 @@ config.get_params.each do |param|
   c = config[param]
   
   branch = c["branch"]
-  
-  if branch == nil
-    branch = "master"
-  end
 
   puts "---> Installing submodule #{c["path"]}"
-  `git clone #{c["url"]} -b #{branch} #{ENV['BUILD_DIR']}/#{c["path"]}`
-
+  if branch
+    `git clone #{c["url"]} -b #{branch} #{ENV['BUILD_DIR']}/#{c["path"]}`
+  else
+    `git clone #{c["url"]} #{ENV['BUILD_DIR']}/#{c["path"]}`
+  end
+  
   puts "----> Removing submodule git folder"
   `rm -rf #{ENV['BUILD_DIR']}/#{c["path"]}/.git`
 end
