@@ -8,6 +8,9 @@ if [ ! -f "$BUILD_DIR/.gitmodules" ]; then
   exit 0
 fi
 
+export GEM_HOME=$bp_dir/vendor/gems
+export GEM_PATH=$bp_dir/vendor/gems
+
 echo "---> Installing parseconfig gem"
 gem install 'parseconfig'
 
