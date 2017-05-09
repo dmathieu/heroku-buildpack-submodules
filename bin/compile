@@ -1,17 +1,18 @@
 #!/bin/sh
+source /dev/stdin <<< "$(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh)"
 
 export BUILD_DIR=$1
 bp_dir=$(cd $(dirname $0); cd ..; pwd)
 
 if [ ! -f "$BUILD_DIR/.gitmodules" ]; then
-  echo "---> No .gitmodules file found. Skipping."
+  puts_warn "No .gitmodules file found. Skipping."
   exit 0
 fi
 
 export GEM_HOME=$bp_dir/vendor/gems
 export GEM_PATH=$bp_dir/vendor/gems
 
-echo "---> Installing parseconfig gem"
+puts_step "Installing parseconfig gem"
 gem install 'parseconfig'
 
 ruby $bp_dir/bin/install_git_submodules.rb
