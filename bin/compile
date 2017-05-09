@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source /dev/stdin <<< "$(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v4/stdlib.sh)"
 
 export BUILD_DIR=$1
