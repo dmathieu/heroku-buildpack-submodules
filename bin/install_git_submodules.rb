@@ -11,10 +11,11 @@ config.get_params.each do |param|
 
   puts "-----> Installing submodule #{c["path"]} #{c["branch"]}"
   branch_flag = c["branch"] ? "-b #{c['branch']}" : ""
-  `git clone --single-branch #{c["url"]} #{branch_flag} #{ENV['BUILD_DIR']}/#{c["path"]}`
+  build_path = "#{ENV['BUILD_DIR']}/#{c["path"]}"
+  `git clone -q --single-branch #{c["url"]} #{branch_flag} #{build_path}`
   if c.key?("revision")
     puts "       Setting submodule revision to #{c["revision"]}"
-    Dir.chdir(c["path"]) do
+    Dir.chdir(build_path) do
       `git reset --hard #{c["revision"]}`
     end
   end
