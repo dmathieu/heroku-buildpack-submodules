@@ -14,7 +14,9 @@ config.get_params.each do |param|
   `git clone --single-branch #{c["url"]} #{branch_flag} #{ENV['BUILD_DIR']}/#{c["path"]}`
   if c.key?("revision")
     puts "      Setting submodule revision to #{c["revision"]}"
-    `git reset --hard #{c["revision"]}`
+    Dir.chdir(c["path"]) do
+      `git reset --hard #{c["revision"]}`
+    end
   end
 
   puts "      Removing submodule git folder"
