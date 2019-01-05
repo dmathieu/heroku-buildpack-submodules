@@ -13,4 +13,26 @@ This buildpack will parse your `.gitmodules` file for all submodules and install
 
 > heroku buildpacks:add https://github.com/dmathieu/heroku-buildpack-submodules
 
+## Configuration
+
+In your `.gitmodules` file you can specify a branch name or an exact exact revision to check out.
+
+For example to specify a branch:
+
+```
+[submodule "path/to/checkout"]
+	path = "path/to/checkout"
+	url = https://github.com/someuser/somerepo.git
+	branch = mybranch
+```
+
+To specify an exact revision:
+
+```
+[submodule "path/to/checkout"]
+	path = "path/to/checkout"
+	url = https://github.com/someuser/somerepo.git
+	revision = d97f4bf
+```
+
 Enjoy!
