@@ -11,7 +11,7 @@ config.get_params.each do |param|
 
   puts "----> Installing submodule #{c["path"]} #{c["branch"]}"
   branch_flag = c["branch"] ? "-b #{c['branch']}" : ""
-  `git clone #{c["url"]} #{branch_flag} #{ENV['BUILD_DIR']}/#{c["path"]}`
+  `git clone --single-branch #{c["url"]} #{branch_flag} #{ENV['BUILD_DIR']}/#{c["path"]}`
 
   puts "      Removing submodule git folder"
   `rm -rf #{ENV['BUILD_DIR']}/#{c["path"]}/.git`
