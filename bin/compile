@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 export BUILD_DIR=$1
 bp_dir=$(cd $(dirname $0); cd ..; pwd)
@@ -8,10 +10,32 @@ if [ ! -f "$BUILD_DIR/.gitmodules" ]; then
   exit 0
 fi
 
+# As of Heroku-22, there is no system Ruby installation in the stack image, so if the
+# app doesn't already have the Ruby buildpack set before this one, we have to download
+# our own copy of Ruby to use to run `install_git_submodules.rb`. This Ruby installation
+# will only be available during the compile of this buildpack, and not by subsequent
+# buildpacks (so will not interfere with the real Ruby buildpack, if that's run later).
+if ! command -v ruby &> /dev/null; then
+  echo "-----> Ruby installation not found, temporarily installing Ruby for use by this buildpack"
+  ruby_version="3.1.2"
+  ruby_url="https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/${STACK}/ruby-${ruby_version}.tgz"
+  vendored_ruby_dir="${bp_dir}/vendor/ruby"
+  mkdir -p "${vendored_ruby_dir}"
+
+  if ! curl --silent --show-error --fail --retry 3 --retry-connrefused --connect-timeout 5 "${ruby_url}" | tar -zxC "${vendored_ruby_dir}"; then
+    echo "     ! Failed to download Ruby from '${ruby_url}'" >&2
+    exit 1
+  fi
+
+  export PATH="${vendored_ruby_dir}/bin:${PATH}"
+
+  echo "-----> Installed Ruby ${ruby_version}"
+fi
+
 export GEM_HOME=$bp_dir/vendor/gems
 export GEM_PATH=$bp_dir/vendor/gems
 
-echo "---> Installing parseconfig gem"
+echo "-----> Installing parseconfig gem"
 gem install 'parseconfig'
 
 ruby $bp_dir/bin/install_git_submodules.rb
